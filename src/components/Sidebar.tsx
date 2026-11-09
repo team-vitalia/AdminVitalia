@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { confirmModal, toast } from "@/lib/alerts";
 
 interface NavItem {
   name: string;
@@ -20,6 +21,20 @@ interface SidebarProps {
 export default function Sidebar({ abierto, onCerrar }: SidebarProps) {
   const pathname = usePathname();
   const { usuario, cerrarSesion } = useAuth();
+
+  const handleCerrarSesion = async () => {
+    const confirmado = await confirmModal({
+      title: "¿Cerrar sesión?",
+      text: "¿Deseas salir del panel de administración central?",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+      isDanger: true,
+    });
+    if (confirmado) {
+      toast.success("Sesión finalizada correctamente");
+      cerrarSesion();
+    }
+  };
 
   const navItems: NavItem[] = [
     {
@@ -170,7 +185,7 @@ export default function Sidebar({ abierto, onCerrar }: SidebarProps) {
 
           <button
             type="button"
-            onClick={cerrarSesion}
+            onClick={handleCerrarSesion}
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50/80 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-slate-800 dark:bg-slate-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30 dark:hover:border-rose-500/30"
           >
             <svg

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "@/lib/alerts";
 
 export default function LoginPage() {
   const { iniciarSesion } = useAuth();
@@ -18,12 +19,11 @@ export default function LoginPage() {
 
     try {
       await iniciarSesion(correo, password);
+      toast.success("Bienvenido al panel SuperAdmin");
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Credenciales no válidas o error de comunicación");
-      }
+      const msg = err instanceof Error ? err.message : "Credenciales no válidas o error de comunicación";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setEnviando(false);
     }

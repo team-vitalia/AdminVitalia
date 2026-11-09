@@ -11,6 +11,7 @@ import {
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
+import { confirmModal, toast } from "@/lib/alerts";
 
 export default function ClinicasPage() {
   const router = useRouter();
@@ -45,11 +46,15 @@ export default function ClinicasPage() {
     e.stopPropagation();
     const nuevoEstado = !clinica.activa;
     const accion = nuevoEstado ? "activar" : "suspender";
-    const confirmacion = window.confirm(
-      `¿Confirmar cambio de estado a ${accion} para "${clinica.nombre_comercial}"?`
-    );
+    const confirmado = await confirmModal({
+      title: nuevoEstado ? "¿Activar clínica?" : "¿Suspender clínica?",
+      text: `¿Confirmar cambio de estado a ${accion} para "${clinica.nombre_comercial}"?`,
+      confirmButtonText: nuevoEstado ? "Sí, activar" : "Sí, suspender",
+      cancelButtonText: "Cancelar",
+      isDanger: !nuevoEstado,
+    });
 
-    if (!confirmacion) return;
+    if (!confirmado) return;
 
     setProcesandoId(clinica.id);
     try {
@@ -57,12 +62,14 @@ export default function ClinicasPage() {
       setClinicas((prev) =>
         prev.map((c) => (c.id === clinica.id ? clinicaActualizada : c))
       );
+      toast.success(
+        nuevoEstado
+          ? `Clínica "${clinica.nombre_comercial}" activada con éxito`
+          : `Clínica "${clinica.nombre_comercial}" suspendida con éxito`
+      );
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert(`Error al actualizar estado: ${err.message}`);
-      } else {
-        alert("Ocurrió un error inesperado");
-      }
+      const mensaje = err instanceof Error ? err.message : "Ocurrió un error inesperado";
+      toast.error(`Error al actualizar estado: ${mensaje}`);
     } finally {
       setProcesandoId(null);
     }

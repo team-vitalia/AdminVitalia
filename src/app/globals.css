@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "sweetalert2/dist/sweetalert2.min.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -14,4 +15,17 @@ html {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
+}
+
+.dark .swal2-popup {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark .swal2-title {
+  color: #f8fafc !important;
+}
+
+.dark .swal2-html-container {
+  color: #94a3b8 !important;
 }

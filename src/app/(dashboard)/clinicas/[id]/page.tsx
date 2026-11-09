@@ -13,6 +13,7 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { confirmModal, toast } from "@/lib/alerts";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -64,17 +65,26 @@ export default function ClinicaDetallePage({ params }: PageProps) {
     if (!metricas) return;
     const nuevoEstado = !metricas.activa;
     const accion = nuevoEstado ? "activar" : "suspender";
-    const confirmacion = window.confirm(
-      `¿Confirmar que desea ${accion} el acceso de "${metricas.nombre_comercial}"?`
-    );
-    if (!confirmacion) return;
+    const confirmado = await confirmModal({
+      title: nuevoEstado ? "¿Activar acceso de la clínica?" : "¿Suspender acceso de la clínica?",
+      text: `¿Confirmar que desea ${accion} el acceso de "${metricas.nombre_comercial}"?`,
+      confirmButtonText: nuevoEstado ? "Sí, activar" : "Sí, suspender",
+      cancelButtonText: "Cancelar",
+      isDanger: !nuevoEstado,
+    });
+    if (!confirmado) return;
 
     setCambiandoEstado(true);
     try {
       await updateEstadoClinica(metricas.clinica_id, nuevoEstado);
       await cargarDatos();
+      toast.success(
+        nuevoEstado
+          ? `Clínica "${metricas.nombre_comercial}" activada con éxito`
+          : `Clínica "${metricas.nombre_comercial}" suspendida con éxito`
+      );
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Error al actualizar estado");
+      toast.error(err instanceof Error ? err.message : "Error al actualizar estado");
     } finally {
       setCambiandoEstado(false);
     }
@@ -87,8 +97,9 @@ export default function ClinicaDetallePage({ params }: PageProps) {
       await updatePlanClinica(metricas.clinica_id, planSeleccionadoId);
       setModalPlanAbierto(false);
       await cargarDatos();
+      toast.success("Plan de suscripción actualizado correctamente");
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Error al actualizar el plan");
+      toast.error(err instanceof Error ? err.message : "Error al actualizar el plan");
     } finally {
       setGuardandoPlan(false);
     }
