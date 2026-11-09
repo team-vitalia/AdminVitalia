@@ -12,6 +12,9 @@ export interface PlanClinica {
   id: number;
   nombre: string;
   precio_mensual: number;
+  precio_anual?: number;
+  limite_personal?: number;
+  limite_pacientes?: number;
   paypal_plan_id?: string | null;
 }
 
@@ -27,13 +30,25 @@ export interface ClinicaSuperadmin {
   total_pacientes: number;
 }
 
+export interface MetricaItemMes {
+  mes: string;
+  ingresos: number;
+  nuevas_clinicas: number;
+  nuevos_usuarios: number;
+}
+
 export interface MetricasSuperadmin {
   total_clinicas: number;
   clinicas_activas: number;
   clinicas_inactivas: number;
   ingresos_mensuales: number;
+  proyeccion_anual: number;
   total_planes: number;
   total_usuarios: number;
+  usuarios_activos: number;
+  usuarios_nuevos_mes: number;
+  tasa_crecimiento_usuarios: number;
+  historico_6_meses: MetricaItemMes[];
 }
 
 export interface PlanSuperadmin {
@@ -56,6 +71,51 @@ export interface UsuarioSuperadmin {
   correo: string;
   rol_id: number;
   estado: string;
+}
+
+export interface UsoRecurso {
+  actual: number;
+  limite: number;
+  porcentaje: number;
+  unidad: string;
+}
+
+export interface AuditoriaAcceso {
+  usuario_id: number;
+  nombre_usuario: string;
+  rol: string;
+  correo: string;
+  ultimo_acceso?: string | null;
+}
+
+export interface AuditoriaActividad {
+  id: number;
+  usuario: string;
+  accion: string;
+  descripcion?: string | null;
+  marca_tiempo: string;
+  nombre_tabla?: string | null;
+}
+
+export interface MetricasClinicaIndividual {
+  clinica_id: number;
+  nombre_comercial: string;
+  activa: boolean;
+  fecha_registro: string;
+  plan?: PlanClinica | null;
+  paypal_subscription_id?: string | null;
+  estado_suscripcion: string;
+  proximo_ciclo_facturacion?: string | null;
+  citas_mes_actual: number;
+  citas_mes_anterior: number;
+  uso_personal: UsoRecurso;
+  uso_pacientes: UsoRecurso;
+  uso_almacenamiento: UsoRecurso;
+  candidato_upsell: boolean;
+  motivos_upsell: string[];
+  administradores: AdministradorClinica[];
+  ultimos_accesos: AuditoriaAcceso[];
+  actividades_recientes: AuditoriaActividad[];
 }
 
 export async function loginSuperadmin(
@@ -94,6 +154,14 @@ export async function getClinicas(): Promise<ClinicaSuperadmin[]> {
   return apiFetch<ClinicaSuperadmin[]>("/api/superadmin/clinicas");
 }
 
+export async function getClinica(id: number): Promise<ClinicaSuperadmin> {
+  return apiFetch<ClinicaSuperadmin>(`/api/superadmin/clinicas/${id}`);
+}
+
+export async function getMetricasClinica(id: number): Promise<MetricasClinicaIndividual> {
+  return apiFetch<MetricasClinicaIndividual>(`/api/superadmin/clinicas/${id}/metricas`);
+}
+
 export async function updateEstadoClinica(
   id: number,
   activa: boolean
@@ -101,6 +169,16 @@ export async function updateEstadoClinica(
   return apiFetch<ClinicaSuperadmin>(`/api/superadmin/clinicas/${id}/estado`, {
     method: "PATCH",
     body: JSON.stringify({ activa }),
+  });
+}
+
+export async function updatePlanClinica(
+  idClinica: number,
+  planId: number
+): Promise<ClinicaSuperadmin> {
+  return apiFetch<ClinicaSuperadmin>(`/api/superadmin/clinicas/${idClinica}/plan`, {
+    method: "PATCH",
+    body: JSON.stringify({ plan_id: planId }),
   });
 }
 
