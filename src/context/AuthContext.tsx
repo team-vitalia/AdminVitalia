@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const datos = await getMe();
-        if (datos.rol_id !== 1) {
+        if (!datos.is_superadmin) {
           removeAuthToken();
           setUsuario(null);
           if (pathname !== "/login") {

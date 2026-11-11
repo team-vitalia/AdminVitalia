@@ -71,6 +71,7 @@ export interface UsuarioSuperadmin {
   correo: string;
   rol_id: number;
   estado: string;
+  is_superadmin?: boolean;
 }
 
 export interface UsoRecurso {
@@ -134,9 +135,9 @@ export async function loginSuperadmin(
 
   const meRes = await apiFetch<UsuarioSuperadmin>("/api/auth/me");
 
-  if (meRes.rol_id !== 1) {
+  if (!meRes.is_superadmin) {
     removeAuthToken();
-    throw new Error("Acceso denegado: esta cuenta no posee privilegios de Super Administrador.");
+    throw new Error("Acceso denegado: solo el Super Administrador de la plataforma puede ingresar a este panel.");
   }
 
   return { access_token: loginRes.access_token, usuario: meRes };
