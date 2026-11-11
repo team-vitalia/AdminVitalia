@@ -112,7 +112,7 @@ export default function DashboardPage() {
             <span className="text-xs text-sky-600 dark:text-sky-400 font-medium">/ año</span>
           </div>
           <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400">
-            Estimación anualizada de ingresos SaaS
+            Estimación anualizada de ingresos
           </p>
         </Card>
 
@@ -163,7 +163,7 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <CardHeader>
-              <CardTitle>Métricas de Eficiencia SaaS</CardTitle>
+              <CardTitle>Métricas de Eficiencia</CardTitle>
               <CardDescription>
                 Indicadores clave de retención y monetización
               </CardDescription>

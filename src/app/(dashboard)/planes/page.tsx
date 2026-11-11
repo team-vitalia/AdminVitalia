@@ -72,7 +72,7 @@ export default function PlanesPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-          Catálogo de Suscripciones SaaS
+          Catálogo de Suscripciones
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Estructura de precios, límites operativos e identificadores de planes vinculados en PayPal

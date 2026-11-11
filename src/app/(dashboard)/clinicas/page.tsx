@@ -200,7 +200,7 @@ export default function ClinicasPage() {
             Directorio de Clínicas
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Supervisión integral de clientes SaaS, planes y auditoría de accesos
+            Supervisión integral de clientes, planes y auditoría de accesos
           </p>
         </div>
 

@@ -33,7 +33,7 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
     if (pathname === "/planes") {
       return {
         title: "Catálogo de Planes y Tarifas",
-        subtitle: "Estructura de precios SaaS y distribución de suscriptores",
+        subtitle: "Estructura de precios y distribución de suscriptores",
       };
     }
     return {
@@ -73,7 +73,6 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
         <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
           <span className="h-2 w-2 rounded-full bg-emerald-500" />
-          <span className="text-[11px] font-medium hidden sm:inline">FastAPI SaaS Online</span>
           <span className="text-[11px] font-medium sm:hidden">Online</span>
         </div>
       </div>
